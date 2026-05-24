@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+
 import "package:full_cours/challenge/quiz.dart";
 import "package:full_cours/TODOAPP/widgets/expenses.dart";
 import "package:full_cours/TODO_APP_REPLY/expense.dart";
@@ -14,6 +16,61 @@ var kDarColorScheme = ColorScheme.fromSeed(
 );
 
 void main() {
+
+  /*
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((fn) {
+
+    runApp(
+      MaterialApp(
+          darkTheme: ThemeData.dark().copyWith(
+              colorScheme: kDarColorScheme
+          ),
+          theme: ThemeData(
+              useMaterial3: true,
+              scaffoldBackgroundColor: kColorScheme.secondaryContainer,
+              colorScheme: kColorScheme,
+              cardTheme:  CardThemeData(
+                color: kColorScheme.onPrimaryContainer,
+                margin: const EdgeInsets.all(16),
+
+              ),
+
+              elevatedButtonTheme: ElevatedButtonThemeData(
+
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(7)
+                      )
+                  )
+              ),
+              appBarTheme: const AppBarTheme().copyWith(
+                backgroundColor: kColorScheme.onPrimaryContainer,
+                foregroundColor: kColorScheme.primaryContainer,
+                centerTitle: true,
+              ),
+
+              textTheme: ThemeData().textTheme.copyWith(
+                titleLarge: GoogleFonts.lato(
+                    color: Colors.white,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 25
+                ),
+
+
+              )
+          ),
+          themeMode: ThemeMode.dark,
+          home: ExpenseScreen()
+      ),
+    );
+
+
+  });
+  */
+
   runApp(
     MaterialApp(
         darkTheme: ThemeData.dark().copyWith(

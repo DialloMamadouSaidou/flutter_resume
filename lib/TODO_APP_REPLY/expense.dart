@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:full_cours/TODO_APP_REPLY/Widget/New_Expense.dart";
 import "package:full_cours/TODO_APP_REPLY/Widget/expense_list.dart";
 import "package:full_cours/TODO_APP_REPLY/Widget/data.dart";
+import "package:full_cours/TODO_APP_REPLY/chart/chart.dart";
 
 import "Widget/data_expense.dart";
 
@@ -57,11 +58,12 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   @override
   Widget build(context) {
+    final width = MediaQuery.of(context).size.width;
     Widget Main_menu = Center(
         child: Text("Aucun element trouver")
     );
 
-    if(ma_liste_de_depense.length != 0){
+    if(ma_liste_de_depense.isNotEmpty){
 
       setState(() {
         Main_menu = ExpenseList(
@@ -72,12 +74,26 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
     }
     return Scaffold(
+        resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text("Sayeed"),
         actions: [IconButton(onPressed: _addExpense, icon: Icon(Icons.add))],
       ),
 
-      body: Main_menu
+      body: width < 600 ? Column(
+        children: [
+          Expanded(
+            child: Main_menu
+          )
+        ],
+      ) :
+      Row(
+        children: [
+          Expanded(
+              child: Main_menu
+          )
+        ],
+      )
     );
   }
 }

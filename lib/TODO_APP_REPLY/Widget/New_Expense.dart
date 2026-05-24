@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 
 import "package:full_cours/TODO_APP_REPLY/Widget/data_expense.dart";
+import "package:google_fonts/google_fonts.dart";
 
 class NewExpense extends StatefulWidget {
   final void Function(DataExpense data) ma_liste_depense;
@@ -96,81 +97,113 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(18),
-                child: TextField(
-                  controller: _title_controller,
-                  keyboardType: TextInputType.text,
+    final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+    return SizedBox(
+      height: double.infinity,
+      child: SingleChildScrollView(
+      child: Padding(
+      padding: EdgeInsets.fromLTRB(16, 2, 16, keyboardSpace + 16),
 
-                  maxLength: 30,
-                  decoration: InputDecoration(label: Text("Title")),
-                ),
-              ),
-            ),
-          ],
-        ),
-
-        Row(
+        child: Column(
+          // Optionnel : aligne le contenu au début verticalement
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(18),
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  controller: _amount_controller,
-                  decoration: InputDecoration(
-                    label: Text("Amount"),
-                    prefixText: "\$",
+
+            // --- PREMIÈRE LIGNE (Titre) ---
+            // Retrait de l'Expanded vertical ici
+            Row(
+              children: [
+                Expanded( // Cet Expanded horizontal est CORRECT et nécessaire
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    child: TextField(
+                      controller: _title_controller,
+                      keyboardType: TextInputType.text,
+                      maxLength: 30,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        label: Container(
+                          margin: const EdgeInsets.only(bottom: 45),
+                          child: Text(
+                            "Title",
+                            style: GoogleFonts.lato(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
 
-            const Spacer(),
-            Expanded(
-              child: DropdownButton(
-                value: _selected_category,
-                onChanged: Choice_Item,
-                items: Category.values.map((item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(item.name),
+            // --- DEUXIÈME LIGNE (Montant, Catégorie, Date) ---
+            // Retrait de l'Expanded vertical ici
+            Row(
+              children: [
+                Expanded( // CORRECT
+                  child: Padding(
+                    padding: const EdgeInsets.all(18),
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      controller: _amount_controller,
+                      decoration: const InputDecoration(
+                        label: Text("Amount"),
+                        prefixText: "\$",
+                      ),
                     ),
-                  );
-                }).toList(),
-              ),
+                  ),
+                ),
+                const SizedBox(width: 13),
+                Expanded( // CORRECT
+                  child: DropdownButton<Category>(
+                    value: _selected_category,
+                    onChanged: Choice_Item,
+                    items: Category.values.map((item) {
+                      return DropdownMenuItem<Category>(
+                        value: item,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(item.name),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _choice_date,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                  child: Text(
+                    _date_choice == null
+                        ? "Choice date"
+                        : format.format(_date_choice!).toString(),
+                  ),
+                ),
+              ],
             ),
 
-            ElevatedButton(
-              onPressed: _choice_date,
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              child: Text(
-                _date_choice == null
-                    ? "Choice date"
-                    : format.format(_date_choice!).toString(),
-              ),
+            // --- TROISIÈME LIGNE (Boutons d'action) ---
+            // Retrait de l'Expanded vertical ici
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(onPressed: close_window, child: const Text("Clear")),
+                const SizedBox(width: 8), // Petit espace entre tes deux boutons
+                ElevatedButton(onPressed: _saved_data, child: const Text("Saved data")),
+              ],
             ),
+
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            ElevatedButton(onPressed: close_window, child: Text("Clear")),
-            ElevatedButton(onPressed: _saved_data, child: Text("Saved data")),
-          ],
-        ),
-      ],
+      ),
+    )
     );
+
   }
 }

@@ -48,13 +48,12 @@ class ExpenseBucket {
     double sum = 0;
 
     for(final expense in expenses) {
-
-      if(expense.category == category){
         sum += expense.amount;
-      }
     }
 
     return sum;
   }
 
 }
+
+//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
