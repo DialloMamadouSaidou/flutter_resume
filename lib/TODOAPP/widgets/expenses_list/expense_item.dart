@@ -16,8 +16,9 @@ class ExpenseItem extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
-                Text("\$${expense.amount.toStringAsFixed(2)}",
-                style: Theme.of(context).textTheme.titleLarge
+                Text(
+                  "\$${expense.amount.toStringAsFixed(2)}",
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Spacer(),
                 Row(

@@ -1,3 +1,6 @@
+import "dart:io";
+
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 
 import "package:full_cours/TODO_APP_REPLY/Widget/data_expense.dart";
@@ -47,14 +50,26 @@ class _NewExpenseState extends State<NewExpense> {
     Navigator.pop(context);
   }
 
-  void _saved_data() {
-    final text_entrer = _title_controller.text.trim();
-    final amount = double.tryParse(_amount_controller.text.trim());
-
-    if (amount == null ||
-        amount <= 0 ||
-        text_entrer == "" ||
-        _date_choice == null) {
+  void _show_dialog() {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Input Error"),
+            content: const Text("Tout les entrer doivent être valide"),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Ok"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
       showDialog(
         context: context,
         builder: (context) {
@@ -72,7 +87,18 @@ class _NewExpenseState extends State<NewExpense> {
           );
         },
       );
+    }
+  }
 
+  void _saved_data() {
+    final text_entrer = _title_controller.text.trim();
+    final amount = double.tryParse(_amount_controller.text.trim());
+
+    if (amount == null ||
+        amount <= 0 ||
+        text_entrer == "" ||
+        _date_choice == null) {
+      _show_dialog();
       return;
     } else {
       widget.ma_liste_depense(
@@ -98,112 +124,131 @@ class _NewExpenseState extends State<NewExpense> {
   @override
   Widget build(BuildContext context) {
     final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
-    return SizedBox(
-      height: double.infinity,
-      child: SingleChildScrollView(
-      child: Padding(
-      padding: EdgeInsets.fromLTRB(16, 2, 16, keyboardSpace + 16),
+    final hauteur_ecran = MediaQuery.of(context).size.height;
+    return LayoutBuilder(
+      builder: (ctx, constraints) {
+        final double hauteur_screen = constraints.maxWidth;
+        print(constraints.minWidth);
+        print(constraints.maxWidth);
+        print(constraints.minHeight);
+        print(constraints.maxHeight);
+        final _hauteur;
+        if (hauteur_screen > 600) {
+          _hauteur = hauteur_ecran * 0.9;
+        } else {
+          _hauteur = hauteur_ecran * 0.6;
+        }
+        return SizedBox(
+          height: _hauteur,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16, 2, 16, keyboardSpace + 16),
 
-        child: Column(
-          // Optionnel : aligne le contenu au début verticalement
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-
-            // --- PREMIÈRE LIGNE (Titre) ---
-            // Retrait de l'Expanded vertical ici
-            Row(
-              children: [
-                Expanded( // Cet Expanded horizontal est CORRECT et nécessaire
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: TextField(
-                      controller: _title_controller,
-                      keyboardType: TextInputType.text,
-                      maxLength: 30,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(10),
-                        label: Container(
-                          margin: const EdgeInsets.only(bottom: 45),
-                          child: Text(
-                            "Title",
-                            style: GoogleFonts.lato(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          child: TextField(
+                            controller: _title_controller,
+                            keyboardType: TextInputType.text,
+                            maxLength: 30,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 10,
+                              ),
+                              label: Container(
+                                margin: const EdgeInsets.only(bottom: 60),
+                                child: Text(
+                                  "Title",
+                                  style: GoogleFonts.lato(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
 
-            // --- DEUXIÈME LIGNE (Montant, Catégorie, Date) ---
-            // Retrait de l'Expanded vertical ici
-            Row(
-              children: [
-                Expanded( // CORRECT
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      controller: _amount_controller,
-                      decoration: const InputDecoration(
-                        label: Text("Amount"),
-                        prefixText: "\$",
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 13),
-                Expanded( // CORRECT
-                  child: DropdownButton<Category>(
-                    value: _selected_category,
-                    onChanged: Choice_Item,
-                    items: Category.values.map((item) {
-                      return DropdownMenuItem<Category>(
-                        value: item,
+                  Row(
+                    children: [
+                      Expanded(
+                        // CORRECT
                         child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Text(item.name),
+                          padding: const EdgeInsets.all(18),
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            controller: _amount_controller,
+                            decoration: const InputDecoration(
+                              label: Text("Amount"),
+                              prefixText: "\$",
+                            ),
+                          ),
                         ),
-                      );
-                    }).toList(),
+                      ),
+                      const SizedBox(width: 13),
+                      Expanded(
+                        // CORRECT
+                        child: DropdownButton<Category>(
+                          value: _selected_category,
+                          onChanged: Choice_Item,
+                          items: Category.values.map((item) {
+                            return DropdownMenuItem<Category>(
+                              value: item,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Text(item.name),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: _choice_date,
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        child: Text(
+                          _date_choice == null
+                              ? "Choice date"
+                              : format.format(_date_choice!).toString(),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: _choice_date,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                  child: Text(
-                    _date_choice == null
-                        ? "Choice date"
-                        : format.format(_date_choice!).toString(),
-                  ),
-                ),
-              ],
-            ),
 
-            // --- TROISIÈME LIGNE (Boutons d'action) ---
-            // Retrait de l'Expanded vertical ici
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(onPressed: close_window, child: const Text("Clear")),
-                const SizedBox(width: 8), // Petit espace entre tes deux boutons
-                ElevatedButton(onPressed: _saved_data, child: const Text("Saved data")),
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: close_window,
+                        child: const Text("Clear"),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ), // Petit espace entre tes deux boutons
+                      ElevatedButton(
+                        onPressed: _saved_data,
+                        child: const Text("Saved data"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-
-          ],
-        ),
-      ),
-    )
+          ),
+        );
+      },
     );
-
   }
 }

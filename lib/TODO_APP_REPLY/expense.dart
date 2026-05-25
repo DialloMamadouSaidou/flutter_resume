@@ -14,9 +14,6 @@ class ExpenseScreen extends StatefulWidget {
 }
 
 class _ExpenseScreenState extends State<ExpenseScreen> {
-
-
-
   void _addItemExpense(DataExpense data) {
     setState(() {
       ma_liste_de_depense.add(data);
@@ -26,6 +23,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   void _addExpense() {
     showModalBottomSheet(
       context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
       builder: (ctx) => NewExpense(_addItemExpense),
     );
   }
@@ -39,61 +38,43 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text(expense.title as String),
-          duration: Duration(seconds: 3),
-          action: SnackBarAction(
-              label: "Undo",
-              onPressed: (){
-                setState(() {
-                  ma_liste_de_depense.insert(item, expense);
-                });
-
-              }
+        content: Text(expense.title as String),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: "Undo",
+          onPressed: () {
+            setState(() {
+              ma_liste_de_depense.insert(item, expense);
+            });
+          },
+        ),
       ),
-
-      )
     );
-
   }
 
   @override
   Widget build(context) {
     final width = MediaQuery.of(context).size.width;
-    Widget Main_menu = Center(
-        child: Text("Aucun element trouver")
-    );
+    Widget Main_menu = Center(child: Text("Aucun element trouver"));
 
-    if(ma_liste_de_depense.isNotEmpty){
-
+    if (ma_liste_de_depense.isNotEmpty) {
       setState(() {
         Main_menu = ExpenseList(
           ma_liste_de_depense: ma_liste_de_depense,
           removeExpense: _removeExpens,
         );
       });
-
     }
     return Scaffold(
-        resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text("Sayeed"),
         actions: [IconButton(onPressed: _addExpense, icon: Icon(Icons.add))],
       ),
 
-      body: width < 600 ? Column(
-        children: [
-          Expanded(
-            child: Main_menu
-          )
-        ],
-      ) :
-      Row(
-        children: [
-          Expanded(
-              child: Main_menu
-          )
-        ],
-      )
+      body: width < 600
+          ? Column(children: [Expanded(child: Main_menu)])
+          : Row(children: [Expanded(child: Main_menu)]),
     );
   }
 }

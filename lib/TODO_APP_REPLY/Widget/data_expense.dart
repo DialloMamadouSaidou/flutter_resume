@@ -36,24 +36,24 @@ class DataExpense {
 }
 
 class ExpenseBucket {
-
   final Category category;
   final List<DataExpense> expenses;
 
   ExpenseBucket.forCategory(List<DataExpense> all_expense, this.category)
-    : expenses = all_expense.where((element) => element.category == category).toList();
+    : expenses = all_expense
+          .where((element) => element.category == category)
+          .toList();
   const ExpenseBucket({required this.category, required this.expenses});
 
   double get totalExpenses {
     double sum = 0;
 
-    for(final expense in expenses) {
-        sum += expense.amount;
+    for (final expense in expenses) {
+      sum += expense.amount;
     }
 
     return sum;
   }
-
 }
 
 //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
