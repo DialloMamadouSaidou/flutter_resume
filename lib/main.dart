@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:full_cours/Meals/categorie.dart";
+import "package:full_cours/Meals/Screens/categorie.dart";
+import "package:full_cours/Meals/Screens/meals.dart";
+import "package:full_cours/Meals/data/dummy_data.dart";
 
 import "package:full_cours/challenge/quiz.dart";
 import "package:full_cours/TODOAPP/widgets/expenses.dart";
@@ -20,6 +22,7 @@ var kDarColorScheme = ColorScheme.fromSeed(
 
 final theme = ThemeData(
    useMaterial3: true,
+
   colorScheme: ColorScheme.fromSeed(
       brightness: Brightness.dark,
       seedColor: const Color.fromARGB(255, 131, 57, 0)
@@ -134,9 +137,10 @@ class App extends StatelessWidget {
       theme: theme,
       home: Scaffold(
         appBar: AppBar(
+          centerTitle: false,
           title: const Text('Flutter Internals'),
         ),
-        body: CategorieScreen()
+        body: MealsScreen(title: "Some Category", meals: dummyMeals)
       ),
     );
   }
