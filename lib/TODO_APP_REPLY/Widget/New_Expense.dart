@@ -128,10 +128,7 @@ class _NewExpenseState extends State<NewExpense> {
     return LayoutBuilder(
       builder: (ctx, constraints) {
         final double hauteur_screen = constraints.maxWidth;
-        print(constraints.minWidth);
-        print(constraints.maxWidth);
-        print(constraints.minHeight);
-        print(constraints.maxHeight);
+
         final _hauteur;
         if (hauteur_screen > 600) {
           _hauteur = hauteur_ecran * 0.9;

@@ -1,9 +1,12 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:full_cours/Meals/categorie.dart";
 
 import "package:full_cours/challenge/quiz.dart";
 import "package:full_cours/TODOAPP/widgets/expenses.dart";
 import "package:full_cours/TODO_APP_REPLY/expense.dart";
+import "package:full_cours/visualisation_demo/ui_updates_demo.dart";
+
 import "package:google_fonts/google_fonts.dart";
 
 var kColorScheme = ColorScheme.fromSeed(
@@ -15,7 +18,18 @@ var kDarColorScheme = ColorScheme.fromSeed(
   seedColor: Color.fromARGB(255, 5, 99, 125),
 );
 
+final theme = ThemeData(
+   useMaterial3: true,
+  colorScheme: ColorScheme.fromSeed(
+      brightness: Brightness.dark,
+      seedColor: const Color.fromARGB(255, 131, 57, 0)
+  ),
+
+  textTheme: GoogleFonts.latoTextTheme()
+);
 void main() {
+  
+  runApp(const App());
   /*
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
@@ -68,7 +82,7 @@ void main() {
 
 
   });
-  */
+
 
   runApp(
     MaterialApp(
@@ -107,4 +121,23 @@ void main() {
       home: ExpenseScreen(),
     ),
   );
+
+   */
+}
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: theme,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Flutter Internals'),
+        ),
+        body: CategorieScreen()
+      ),
+    );
+  }
 }
