@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:full_cours/Meals/Screens/categorie.dart";
 import "package:full_cours/Meals/Screens/meals.dart";
+import "package:full_cours/Meals/Screens/tabs.dart";
 import "package:full_cours/Meals/data/dummy_data.dart";
 
 import "package:full_cours/challenge/quiz.dart";
@@ -139,7 +140,7 @@ class App extends StatelessWidget {
           centerTitle: false,
           title: const Text('Flutter Internals'),
         ),
-        body: CategorieScreen(),
+        body: TabsScreen(),
       ),
     );
   }
