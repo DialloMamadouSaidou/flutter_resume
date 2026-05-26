@@ -21,17 +21,16 @@ var kDarColorScheme = ColorScheme.fromSeed(
 );
 
 final theme = ThemeData(
-   useMaterial3: true,
+  useMaterial3: true,
 
   colorScheme: ColorScheme.fromSeed(
-      brightness: Brightness.dark,
-      seedColor: const Color.fromARGB(255, 131, 57, 0)
+    brightness: Brightness.dark,
+    seedColor: const Color.fromARGB(255, 131, 57, 0),
   ),
 
-  textTheme: GoogleFonts.latoTextTheme()
+  textTheme: GoogleFonts.latoTextTheme(),
 );
 void main() {
-  
   runApp(const App());
   /*
   WidgetsFlutterBinding.ensureInitialized();
@@ -140,7 +139,7 @@ class App extends StatelessWidget {
           centerTitle: false,
           title: const Text('Flutter Internals'),
         ),
-        body: MealsScreen(title: "Some Category", meals: dummyMeals)
+        body: CategorieScreen(),
       ),
     );
   }
