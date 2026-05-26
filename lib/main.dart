@@ -12,6 +12,8 @@ import "package:full_cours/visualisation_demo/ui_updates_demo.dart";
 
 import "package:google_fonts/google_fonts.dart";
 
+import "Input_handler/widgets/grocery_list.dart";
+
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 96, 59, 181),
 );
@@ -27,6 +29,7 @@ final theme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
     brightness: Brightness.dark,
     seedColor: const Color.fromARGB(255, 131, 57, 0),
+    surface: const Color.fromARGB(255, 42, 51, 59),
   ),
 
   textTheme: GoogleFonts.latoTextTheme(),
@@ -135,13 +138,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme,
-      home: Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          title: const Text('Flutter Internals'),
-        ),
-        body: TabsScreen(),
-      ),
+      title: "Flutter grocery",
+
+      home: GroceryList(),
     );
   }
 }
