@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 
+import "../data/categories.dart";
+
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
 
@@ -12,7 +14,75 @@ class _NewItemState extends State<NewItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Add new Item")),
-      body: Padding(padding: const EdgeInsets.all(12), child: Text("The form")),
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Form(
+          child: Column(
+            children: [
+              TextFormField(
+                maxLength: 50,
+
+                decoration: const InputDecoration(label: Text("Name")),
+                validator: (value) {
+                  if(value == null || value.isEmpty || value.trim().length <= 1 || value.trim().length > 50){
+                    return "Must be between 1 and 50 characters";
+                  }
+                  return null;
+                },
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(label: Text("Quantity")),
+                      initialValue: "1",
+                      validator: (value) {
+                        if(value == null || value.isEmpty || int.tryParse(value) == null || int.tryParse(value)! <= 0){
+                          return "Must be between 1 and 50 characters";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: DropdownButtonFormField(
+                      items: [
+                        for (final category in categories.entries)
+                          DropdownMenuItem(
+                            onTap: () {},
+                            value: category.key,
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  color: category.value.color,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(category.value.title),
+                              ],
+                            ),
+                          ),
+                      ],
+                      onChanged: (v) {},
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(onPressed: (){}, child: const Text("Reset"),),
+                  ElevatedButton(onPressed: (){},
+                    child: Text("Add Item")
+                  )
+                ]
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
