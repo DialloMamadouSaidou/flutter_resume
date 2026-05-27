@@ -1,7 +1,11 @@
+
 import "package:flutter/material.dart";
+import "package:http/http.dart" as http;
+import "dart:convert";
 
 import "../data/categories.dart";
 import "../models/category.dart";
+import "../models/grocery_item.dart";
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -15,7 +19,7 @@ class _NewItemState extends State<NewItem> {
   String entered_Name = "";
   var entered_Quantity = 0;
   bool _isFocused = false;
-  var _selectedCategory = categories[Categories.vegetables]!;
+  var _selectedCategory = categories[Categories.vegetables]! ;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -29,10 +33,30 @@ class _NewItemState extends State<NewItem> {
       });
     });
   }
-  void _saveItem() {
+  void _saveItem() async{
 
        if(_formKey.currentState!.validate()){
          _formKey.currentState!.save();
+         final url = Uri.https("flutter-prep-cdf94-default-rtdb.firebaseio.com", "list_shopping.json");
+         final reponse = await http.post(
+              url,
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: json.encode({
+                "name": entered_Name,
+                "quantity": entered_Quantity,
+                "category": _selectedCategory.title
+              })
+         );
+
+         print(reponse.body);
+         print(reponse.statusCode);
+
+         if(!context.mounted){
+           return;
+         }
+         Navigator.of(context).pop();
        }
 
   }
@@ -94,12 +118,12 @@ class _NewItemState extends State<NewItem> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: DropdownButtonFormField(
-                      initialValue: _selectedCategory,
+                     initialValue: _selectedCategory,
                       items: [
                         for (final category in categories.entries)
                           DropdownMenuItem(
                             onTap: () {},
-                            value: category.key,
+                            value: category.value,
                             child: Row(
                               children: [
                                 Container(
@@ -114,7 +138,9 @@ class _NewItemState extends State<NewItem> {
                           ),
                       ],
                       onChanged: (v) {
-                          print(v);
+                          setState(() {
+                            _selectedCategory = v!;
+                          });
                       },
                     ),
                   ),
