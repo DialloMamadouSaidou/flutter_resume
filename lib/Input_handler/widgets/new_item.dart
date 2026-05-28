@@ -1,4 +1,3 @@
-
 import "package:flutter/material.dart";
 import "package:http/http.dart" as http;
 import "dart:convert";
@@ -20,55 +19,57 @@ class _NewItemState extends State<NewItem> {
   var entered_Quantity = 0;
   bool _isFocused = false;
   var isSending = false;
-  var _selectedCategory = categories[Categories.vegetables]! ;
+  var _selectedCategory = categories[Categories.vegetables]!;
 
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
 
-    _focusNode.addListener((){
+    _focusNode.addListener(() {
       setState(() {
-         _isFocused = _focusNode.hasFocus;
+        _isFocused = _focusNode.hasFocus;
       });
     });
   }
-  void _saveItem() async{
 
-       if(_formKey.currentState!.validate()){
-         setState(() {
-           isSending = true;
-         });
-         _formKey.currentState!.save();
-         final url = Uri.https("flutter-prep-cdf94-default-rtdb.firebaseio.com", "list_shopping.json");
-         final reponse = await http.post(
-              url,
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: json.encode({
-                "name": entered_Name,
-                "quantity": entered_Quantity,
-                "category": _selectedCategory.title
-              })
-         );
+  void _saveItem() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isSending = true;
+      });
+      _formKey.currentState!.save();
+      final url = Uri.https(
+        "flutter-prep-cdf94-default-rtdb.firebaseio.com",
+        "list_shopping.json",
+      );
+      final reponse = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({
+          "name": entered_Name,
+          "quantity": entered_Quantity,
+          "category": _selectedCategory.title,
+        }),
+      );
 
-         if(!context.mounted){
-           return;
-         }
-         var reponse_data = jsonDecode(reponse.body);
-         final _id = reponse_data["name"];
-         print(reponse_data);
+      if (!context.mounted) {
+        return;
+      }
+      var reponse_data = jsonDecode(reponse.body);
+      final _id = reponse_data["name"];
+      print(reponse_data);
 
-         Navigator.of(context).pop(GroceryItem(
-             id: _id,
-             name: entered_Name,
-             quantity: entered_Quantity,
-             category: _selectedCategory)
-         );
-       }
-
+      Navigator.of(context).pop(
+        GroceryItem(
+          id: _id,
+          name: entered_Name,
+          quantity: entered_Quantity,
+          category: _selectedCategory,
+        ),
+      );
+    }
   }
 
   @override
@@ -87,25 +88,31 @@ class _NewItemState extends State<NewItem> {
           key: _formKey,
           child: Column(
             children: [
-
               TextFormField(
                 focusNode: _focusNode,
-                style: TextStyle(fontSize: _isFocused ? 18 : 22, color: Colors.white),
+                style: TextStyle(
+                  fontSize: _isFocused ? 18 : 22,
+                  color: Colors.white,
+                ),
                 maxLength: 50,
                 minLines: 1,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
-                decoration: const InputDecoration(label: Text("Name"),
-                labelStyle: TextStyle(fontSize: 18, color: Colors.white)
+                decoration: const InputDecoration(
+                  label: Text("Name"),
+                  labelStyle: TextStyle(fontSize: 18, color: Colors.white),
                 ),
                 validator: (value) {
-                  if(value == null || value.isEmpty || value.trim().length <= 1 || value.trim().length > 50){
+                  if (value == null ||
+                      value.isEmpty ||
+                      value.trim().length <= 1 ||
+                      value.trim().length > 50) {
                     return "Must be between 1 and 50 characters";
                   }
                   return null;
                 },
-                onSaved: (value){
-                    entered_Name = value!;
+                onSaved: (value) {
+                  entered_Name = value!;
                 },
               ),
               Row(
@@ -116,12 +123,15 @@ class _NewItemState extends State<NewItem> {
                       decoration: InputDecoration(label: Text("Quantity")),
                       initialValue: "1",
                       validator: (value) {
-                        if(value == null || value.isEmpty || int.tryParse(value) == null || int.tryParse(value)! <= 0){
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null ||
+                            int.tryParse(value)! <= 0) {
                           return "Must be between 1 and 50 characters";
                         }
                         return null;
                       },
-                      onSaved: (value){
+                      onSaved: (value) {
                         entered_Quantity = int.parse(value!);
                       },
                     ),
@@ -129,7 +139,7 @@ class _NewItemState extends State<NewItem> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: DropdownButtonFormField(
-                     initialValue: _selectedCategory,
+                      initialValue: _selectedCategory,
                       items: [
                         for (final category in categories.entries)
                           DropdownMenuItem(
@@ -149,31 +159,37 @@ class _NewItemState extends State<NewItem> {
                           ),
                       ],
                       onChanged: (v) {
-                          setState(() {
-                            _selectedCategory = v!;
-                          });
+                        setState(() {
+                          _selectedCategory = v!;
+                        });
                       },
                     ),
                   ),
                 ],
               ),
               Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: isSending ? null : (){
-                     _formKey.currentState!.reset();
-                  },
+                    onPressed: isSending
+                        ? null
+                        : () {
+                            _formKey.currentState!.reset();
+                          },
                     child: const Text("Reset"),
                   ),
                   ElevatedButton(
-                      onPressed: isSending ? null : _saveItem,
-                    child: isSending ?
-                    SizedBox(height: 16, width: 16, child: CircularProgressIndicator()):
-                    Text("Add Item")
-                  )
-                ]
-              )
+                    onPressed: isSending ? null : _saveItem,
+                    child: isSending
+                        ? SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(),
+                          )
+                        : Text("Add Item"),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
