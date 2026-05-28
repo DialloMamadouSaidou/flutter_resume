@@ -1,4 +1,7 @@
+import "dart:convert";
+
 import "package:flutter/material.dart";
+import "package:http/http.dart" as http;
 import "package:full_cours/Input_handler/data/dummy_items.dart";
 import "package:full_cours/Input_handler/widgets/new_item.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -14,39 +17,79 @@ class GroceryList extends StatefulWidget {
 }
 
 class _GroceryListState extends State<GroceryList>{
-  final List<GroceryItem> _groceryItems = [];
+  var _isLoading = true;
+  String? _error;
+  List<GroceryItem> _groceryItems = [];
 
+  @override
+  void initState() {
+
+    super.initState();
+    loadItems();
+  }
+  void loadItems() async{
+    final url = Uri.https("flutter-prep-cdf94-default-rtdb.firebaseio.com", "list_shopping.json");
+
+    final reponse = await http.get(url);
+
+    if(reponse.statusCode >= 400) {
+      setState(() {
+        _error = "Failed to fetch  data. Please try again later";
+      });
+
+    }
+    final Map<String, dynamic> listData = jsonDecode(reponse.body);
+    final List<GroceryItem> _loadItems = [];
+    for(final item in listData.entries) {
+        final category = categories.entries.firstWhere((catItem) => catItem.value.title == item.value["category"]).value;
+        _loadItems.add(
+            GroceryItem(id: item.key,
+                name: item.value["name"],
+                quantity: item.value["quantity"],
+                category: category)
+        );
+    }
+    print(reponse.body);
+    setState(() {
+      _groceryItems = _loadItems;
+      _isLoading = false;
+    });
+
+  }
   void _addItem(BuildContext context) async {
-    final newItem = await Navigator.of(
+    var item = await Navigator.of(
       context,
     ).push<GroceryItem>(MaterialPageRoute(builder: (ctx) => const NewItem()));
 
-    if(newItem == null) {
-      return;
-    }
-
+    if(item == null) return;
     setState(() {
-
+      _groceryItems.add(item);
     });
-    _groceryItems.add(newItem);
+
   }
 
   @override
   Widget build(BuildContext context) {
+
     Widget content = Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
             Text("Liste Vide pour le moment",
-              style: GoogleFonts.lato(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Colors.white
-              )
+                style: GoogleFonts.lato(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white
+                )
             )
-        ],
-      )
+          ],
+        )
     );
+
+
+    if(_isLoading) {
+        content = const Center(child: CircularProgressIndicator());
+    }
 
     if(_groceryItems.isNotEmpty) {
 
@@ -65,6 +108,9 @@ class _GroceryListState extends State<GroceryList>{
           ),
         ),
       );
+    }
+    if(_error != null) {
+      content = Center(child: Text(_error!),);
     }
     return Scaffold(
       appBar: AppBar(
