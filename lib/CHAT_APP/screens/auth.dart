@@ -1,10 +1,8 @@
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
+import "package:firebase_auth/firebase_auth.dart";
 
-
-
-final token =
-    "0AeoWuM-Ga8w1l5QjHHYcDT0Iko1F4e0noghAM8Te9pRjnUY2bN4ONhKbBFs8XuNjvp6Oxg";
+final _firebase = FirebaseAuth.instance;
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -18,16 +16,47 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredEmail = '';
   var _entered_password = '';
   var isLogin = true;
-
-  void _submit() {
+  //User valide
+  //Email: asma@gmail.com
+  //Password: asma11
+  void _submit() async {
     final is_valid = _formKey.currentState!.validate();
 
-    if (is_valid) {
-      _formKey.currentState!.save();
-      _formKey.currentState!.reset();
-      print(_entered_password);
-      print(_enteredEmail);
+    if (!is_valid) {
+      return;
     }
+
+    if(isLogin) {
+
+      try {
+        final user_credentials = await _firebase.signInWithEmailAndPassword(
+            email: _enteredEmail,
+            password: _entered_password);
+        print("Je suius la");
+        print(user_credentials);
+      } catch(error) {
+        print("Moi je suis la");
+        print(error);
+      }
+    } else {
+
+      try {
+        final _userCredentials = await _firebase.createUserWithEmailAndPassword(
+            email: _enteredEmail,
+            password: _entered_password);
+        print(_userCredentials);
+      } on FirebaseAuthException catch(error) {
+        if(error.code == "email-already-in-use"){
+          //....
+        }
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(error.message ?? "Authentification Failed"),)
+        );
+      }
+    }
+
   }
 
   @override
