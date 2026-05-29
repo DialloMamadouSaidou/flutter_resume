@@ -206,31 +206,29 @@ class _GroceryListState extends State<GroceryList> {
             );
           }
 
-
           return ListView.builder(
-              itemCount: _groceryItems.length,
-              itemBuilder: (ctx, index) => Dismissible(
-                key: ValueKey(_groceryItems[index]),
+            itemCount: _groceryItems.length,
+            itemBuilder: (ctx, index) => Dismissible(
+              key: ValueKey(_groceryItems[index]),
 
-                onDismissed: (direction) {
-                  print("Litem concerner est: ${_groceryItems[index]}");
-                  _removeItem(_groceryItems[index]);
-                },
-                child: ListTile(
-                  title: Text(_groceryItems[index].name),
-                  leading: Container(
-                    width: 24,
-                    height: 24,
-                    color: _groceryItems[index].category.color,
-                  ),
-                  trailing: Text(
-                    _groceryItems[index].quantity.toString(),
-                    style: TextStyle(fontSize: 18),
-                  ),
+              onDismissed: (direction) {
+                print("Litem concerner est: ${_groceryItems[index]}");
+                _removeItem(_groceryItems[index]);
+              },
+              child: ListTile(
+                title: Text(_groceryItems[index].name),
+                leading: Container(
+                  width: 24,
+                  height: 24,
+                  color: _groceryItems[index].category.color,
+                ),
+                trailing: Text(
+                  _groceryItems[index].quantity.toString(),
+                  style: TextStyle(fontSize: 18),
                 ),
               ),
-            );
-
+            ),
+          );
         },
       ),
     );

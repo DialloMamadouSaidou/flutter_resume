@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:firebase_core/firebase_core.dart";
+import 'firebase_options.dart';
+import "package:full_cours/CHAT_APP/screens/auth.dart";
 import "package:full_cours/Meals/Screens/categorie.dart";
 import "package:full_cours/Meals/Screens/meals.dart";
 import "package:full_cours/Meals/Screens/tabs.dart";
@@ -28,13 +31,17 @@ final theme = ThemeData(
 
   colorScheme: ColorScheme.fromSeed(
     brightness: Brightness.dark,
-    seedColor: const Color.fromARGB(255, 131, 57, 0),
-    surface: const Color.fromARGB(255, 42, 51, 59),
+    seedColor: const Color.fromARGB(255, 63, 17, 177),
   ),
 
   textTheme: GoogleFonts.latoTextTheme(),
 );
-void main() {
+void main() async{
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const App());
   /*
   WidgetsFlutterBinding.ensureInitialized();
@@ -136,11 +143,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: theme,
-      title: "Flutter grocery",
-
-      home: GroceryList(),
-    );
+    return MaterialApp(theme: theme, title: "Chat app", home: AuthScreen());
   }
 }
